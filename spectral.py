@@ -48,7 +48,7 @@ class MultiSpectralAttentionLayer(torch.nn.Module):
             nn.Sigmoid()
         )
 
-    def forward(self, x):
+    def forward(self, x, is_student = False):
         n,c,h,w = x.shape
         x_pooled = x
         if h != self.dct_h or w != self.dct_w:
@@ -56,9 +56,12 @@ class MultiSpectralAttentionLayer(torch.nn.Module):
             # If you have concerns about one-line-change, don't worry.   :)
             # In the ImageNet models, this line will never be triggered. 
             # This is for compatibility in instance segmentation and object detection.
-        y = self.dct_layer(x_pooled)
 
-        y = self.fc(y).view(n, c, 1, 1)
+        y = self.dct_layer(x_pooled)
+        if is_student:
+            y = self.fc(y).view(n, c, 1, 1)
+        else:
+            y = torch.nn.functional.sigmoid(y)
         return x * y.expand_as(x)
 
 
