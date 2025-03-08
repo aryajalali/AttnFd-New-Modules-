@@ -4,6 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
 from cbam import *
+from spectral import *
 
 
 class _ASPPModule(nn.Module):
@@ -64,7 +65,8 @@ class ASPP(nn.Module):
         self.bn1 = BatchNorm(256)
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(0.5)
-        self.cbam = CBAM(256)
+        # self.cbam = CBAM(256)
+        self.spectral = MultiSpectralAttentionLayer(256, 33, 33)
         self._init_weight()
         
         
@@ -103,11 +105,11 @@ class ASPP(nn.Module):
 
         x = self.conv1(x)
         x = self.bn1(x)
-        #atten = self.cbam(x)
+        # atten = self.cbam(x)
         x = self.relu(x)
         feat = x
-        print("ASPP Shape", x.shape)
-        atten = self.cbam(x)
+        # atten = self.cbam(x)
+        atten = self.spectral(x)
 
         return [feat], [atten], x
 

@@ -5,6 +5,7 @@ import math
 from modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
 import torch.utils.model_zoo as model_zoo
 from cbam import *
+from spectral import *
 
 def conv_bn(inp, oup, stride, BatchNorm):
     return nn.Sequential(
@@ -108,7 +109,8 @@ class MobileNetV2(nn.Module):
                     self.features.append(block(input_channel, output_channel, 1, dilation, t, BatchNorm))
                 input_channel = output_channel
         self.features = nn.Sequential(*self.features)
-        self.cbam = CBAM(320)
+        # self.cbam = CBAM(320)
+        self.spectral = MultiSpectralAttentionLayer(320, 33, 33)
         self._initialize_weights()
 
         if pretrained:
@@ -142,8 +144,7 @@ class MobileNetV2(nn.Module):
         feat3 = self.features[7:14](feat2)
         feat4 = self.features[14:](feat3)
         out = feat4
-        print("Mobilenet Shape", out.shape)
-        atten = self.cbam(out) 
+        atten = self.spectral(out) 
 
         # preReLU
         feat1 = self.features[4].conv[0:2](feat1)
