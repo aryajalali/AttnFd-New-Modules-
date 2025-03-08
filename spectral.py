@@ -61,7 +61,7 @@ class MultiSpectralAttentionLayer(torch.nn.Module):
         if is_student:
             y = self.fc(y).view(n, c, 1, 1)
         else:
-            y = torch.nn.functional.sigmoid(y)
+            y = torch.nn.functional.sigmoid(y).view(n, c, 1, 1)
         return x * y.expand_as(x)
 
 
