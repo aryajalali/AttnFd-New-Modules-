@@ -64,7 +64,7 @@ class Distiller(nn.Module):
             b,c,h,w = t_feats[i].shape
 
             s_attens = self.Connectors[i](self.atten_modules[i - 3](s_feats[i], is_student = True))
-            t_attens = self.Connectors[i](self.t_atten_modules[i - 3](t_feats[i]))
+            t_attens = self.t_atten_modules[i - 3](t_feats[i])
             
             # s_attens[i-3] = self.Connectors[i](s_attens[i-3])
             # loss_attnfd += (s_attens[i-3] / torch.norm(s_attens[i-3], p = 2) - t_attens[i-3] / torch.norm(t_attens[i-3], p = 2)).pow(2).sum() / (b)
