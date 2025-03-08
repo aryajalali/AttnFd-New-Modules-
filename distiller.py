@@ -43,6 +43,9 @@ class Distiller(nn.Module):
         
         self.t_atten_modules = [MultiSpectralAttentionLayer(t, spatial_dims[idx], spatial_dims[idx]) for idx, t in
                                 enumerate(t_channels[3:])]
+        
+        self.atten_modules = nn.ModuleList(self.atten_modules)
+        self.t_atten_modules = nn.ModuleList(self.t_atten_modules)
 
 
         self.t_net = t_net
