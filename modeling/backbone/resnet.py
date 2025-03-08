@@ -111,11 +111,11 @@ class ResNet(nn.Module):
         # self.layer4 = self._make_layer(block, 512, layers[3], stride=strides[3], dilation=dilations[3], BatchNorm=BatchNorm)
         
         if layers[-1] == 2:
-            # self.cbam = CBAM(512)
-            self.spectral = MultiSpectralAttentionLayer(512, 33, 33)
+            self.cbam = CBAM(512)
+            # self.spectral = MultiSpectralAttentionLayer(512, 33, 33)
         else:
-            # self.cbam = CBAM(2048)
-            self.spectral = MultiSpectralAttentionLayer(2048, 33, 33)
+            self.cbam = CBAM(2048)
+            # self.spectral = MultiSpectralAttentionLayer(2048, 33, 33)
         self._init_weight()
         
         
@@ -208,8 +208,8 @@ class ResNet(nn.Module):
         feat2 = self.layer2(feat1)
         feat3 = self.layer3(feat2)
         feat4 = self.layer4(feat3)
-        # atten = self.cbam(feat4)
-        atten = self.spectral(feat4)
+        atten = self.cbam(feat4)
+        # atten = self.spectral(feat4)
         out = F.relu(feat4)
         
         

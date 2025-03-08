@@ -109,8 +109,8 @@ class MobileNetV2(nn.Module):
                     self.features.append(block(input_channel, output_channel, 1, dilation, t, BatchNorm))
                 input_channel = output_channel
         self.features = nn.Sequential(*self.features)
-        # self.cbam = CBAM(320)
-        self.spectral = MultiSpectralAttentionLayer(320, 33, 33)
+        self.cbam = CBAM(320)
+        # self.spectral = MultiSpectralAttentionLayer(320, 33, 33)
         self._initialize_weights()
 
         if pretrained:
@@ -144,7 +144,8 @@ class MobileNetV2(nn.Module):
         feat3 = self.features[7:14](feat2)
         feat4 = self.features[14:](feat3)
         out = feat4
-        atten = self.spectral(out) 
+        # atten = self.spectral(out) 
+        atten = self.cbam(out)
 
         # preReLU
         feat1 = self.features[4].conv[0:2](feat1)

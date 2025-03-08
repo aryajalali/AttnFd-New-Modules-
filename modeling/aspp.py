@@ -65,8 +65,8 @@ class ASPP(nn.Module):
         self.bn1 = BatchNorm(256)
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(0.5)
-        # self.cbam = CBAM(256)
-        self.spectral = MultiSpectralAttentionLayer(256, 33, 33)
+        self.cbam = CBAM(256)
+        # self.spectral = MultiSpectralAttentionLayer(256, 33, 33)
         self._init_weight()
         
         
@@ -108,8 +108,8 @@ class ASPP(nn.Module):
         # atten = self.cbam(x)
         x = self.relu(x)
         feat = x
-        # atten = self.cbam(x)
-        atten = self.spectral(x)
+        atten = self.cbam(x)
+        # atten = self.spectral(x)
 
         return [feat], [atten], x
 
