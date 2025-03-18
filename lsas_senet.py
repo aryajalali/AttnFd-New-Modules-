@@ -28,5 +28,6 @@ class SELayer(nn.Module):
             y = self.sigmoid(y) * self.sigmoid(sub1)
         else:
             # Fixed parameters For the teacher model
-            y = self.sigmoid(y) * y
+            y = y.reshape(b, c, 1, 1)
+            y = y * self.sigmoid(y)
         return x * y
