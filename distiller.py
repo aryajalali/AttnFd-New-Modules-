@@ -6,6 +6,7 @@ import scipy
 import numpy as np
 import math
 from spectral import *
+from lsas_senet import *
 
 def build_feature_connector(t_channel, s_channel):
     C = [nn.Conv2d(s_channel, t_channel, kernel_size=1, stride=1, padding=0, bias=False),
@@ -20,6 +21,9 @@ def build_feature_connector(t_channel, s_channel):
             m.bias.data.zero_()
 
     return nn.Sequential(*C)
+
+
+# use both MultiSpectralAttentionLayer and SELayer and choose them based on args.attn_type
 
 
 class Distiller(nn.Module):
@@ -38,11 +42,21 @@ class Distiller(nn.Module):
         # self.atten_modules = [(s_channels[i], model = 'student').cuda() 
                     #   for i in range(self.start_layer, len(s_channels))]
 
-        self.atten_modules = [MultiSpectralAttentionLayer(s, spatial_dims[idx], spatial_dims[idx]) for idx, s in
-                              enumerate(s_channels[3:])]
+        # self.atten_modules = [MultiSpectralAttentionLayer(s, spatial_dims[idx], spatial_dims[idx]) for idx, s in
+        #                       enumerate(s_channels[3:])]
         
-        self.t_atten_modules = [MultiSpectralAttentionLayer(t, spatial_dims[idx], spatial_dims[idx]) for idx, t in
+        # self.t_atten_modules = [MultiSpectralAttentionLayer(t, spatial_dims[idx], spatial_dims[idx]) for idx, t in
+        #                         enumerate(t_channels[3:])]
+
+
+        if args.attn_type == 'spectral':
+            self.atten_modules = [MultiSpectralAttentionLayer(s, spatial_dims[idx], spatial_dims[idx]) for idx, s in
+                              enumerate(s_channels[3:])]
+            self.t_atten_modules = [MultiSpectralAttentionLayer(t, spatial_dims[idx], spatial_dims[idx]) for idx, t in
                                 enumerate(t_channels[3:])]
+        elif args.attn_type == 'lsas':
+            self.atten_modules = [SELayer(s) for s in s_channels[3:]]
+            self.t_atten_modules = [SELayer(t) for t in t_channels[3:]]
         
         self.atten_modules = nn.ModuleList(self.atten_modules)
         self.t_atten_modules = nn.ModuleList(self.t_atten_modules)

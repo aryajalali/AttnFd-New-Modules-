@@ -232,6 +232,7 @@ def main():
                         metavar='M', help='w-decay (default: 5e-4)')
     parser.add_argument('--nesterov', action='store_true', default=False,
                         help='whether use nesterov (default: False)')
+    
     # cuda, seed and logging
     parser.add_argument('--no-cuda', action='store_true', default=
                         False, help='disables CUDA training')
@@ -260,6 +261,10 @@ def main():
     
     parser.add_argument('--teacher_path', type=str, default='pretrained/teacher-pascal.pth.tar',
                         help='path to the pretrained teache')
+    
+    parser.add_argument('--attn_type', type=str, default='lsas',
+                        choices=['spectral', 'lsas'],
+                        help='attention type (default: lsas)')
 
     args = parser.parse_args()
     args.cuda = not args.no_cuda and torch.cuda.is_available()
