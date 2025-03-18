@@ -30,6 +30,5 @@ class SELayer(nn.Module):
             # Fixed parameters For the teacher model
             y = y.reshape(b, c, 1, 1)
             y = y * self.sigmoid(y)
-
-        print(f"y: {y.shape}, x: {x.shape}")
+            
         return x * y

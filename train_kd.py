@@ -123,8 +123,6 @@ class Trainer(object):
             loss_seg = self.criterion(output, target)
             
             loss = loss_seg + attnfd_loss
-
-            print(f"loss_seg: {loss_seg.item()}, attnfd_loss: {attnfd_loss.item()}")
             
             loss.backward()
             optimizer.step()
