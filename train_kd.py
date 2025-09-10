@@ -263,7 +263,7 @@ def main():
                         help='path to the pretrained teache')
     
     parser.add_argument('--attn_type', type=str, default='lsas',
-                        choices=['spectral', 'lsas'],
+                        choices=['spectral', 'lsas', 'sfa'],
                         help='attention type (default: lsas)')
 
     args = parser.parse_args()

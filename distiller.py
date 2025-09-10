@@ -7,6 +7,7 @@ import numpy as np
 import math
 from spectral import *
 from lsas_senet import *
+from SFA import *
 
 def build_feature_connector(t_channel, s_channel):
     C = [nn.Conv2d(s_channel, t_channel, kernel_size=1, stride=1, padding=0, bias=False),
@@ -57,6 +58,11 @@ class Distiller(nn.Module):
         elif args.attn_type == 'lsas':
             self.atten_modules = [SELayer(s) for s in s_channels[3:]]
             self.t_atten_modules = [SELayer(t) for t in t_channels[3:]]
+
+        elif args.attn_type == 'sfa':
+            print("Using SFA attention module")
+            self.atten_modules = [SFA(s) for s in s_channels[3:]]
+            self.t_atten_modules = [SFA(t) for t in t_channels[3:]]
         
         self.atten_modules = nn.ModuleList(self.atten_modules)
         self.t_atten_modules = nn.ModuleList(self.t_atten_modules)
